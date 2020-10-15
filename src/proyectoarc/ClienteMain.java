@@ -44,9 +44,10 @@ public class ClienteMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
         ArrayList<Thread> clientes = new ArrayList<Thread>();
-        for(int i = 0; i < 100; i++){
+        for(int i = 1; i <= 100; i++){
+            Thread.sleep(1);
             clientes.add(new Cliente(i));
         }
         for(Thread thread : clientes){
