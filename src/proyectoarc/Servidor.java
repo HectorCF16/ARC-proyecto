@@ -6,6 +6,8 @@
 package proyectoarc;
 import java.io.*;
 import java.net.*;
+import java.util.Observable;
+import java.util.Scanner;
 import java.util.logging.*;
 
 /**
@@ -19,22 +21,39 @@ public class Servidor {
      */
     public static void main(String args[]) throws IOException {
         ServerSocket ss;
+        Coordenadas coordenadas;
         System.out.print("Iniciando servidor. Espere un momento.");
+        
         try{
             ss = new ServerSocket(00001);
-            System.out.print("\t[OK]");
+            System.out.print("\t[OK]\n");
+            
+            System.out.println("Dame el numero de clientes: ");
+            Scanner s = new Scanner(System.in);
+            String cli = s.nextLine();
+
+            System.out.println("Dame el numero de vecinos: ");
+            s = new Scanner(System.in);
+            String veci = s.nextLine();
+
+            System.out.println("Dame el numero de bucles ");
+            s = new Scanner(System.in);
+            String bucles = s.nextLine();
+            
             int idSession = 0;
             while(true) {
-            Socket socket;
-            socket = ss.accept();
-            System.out.println("Nueva conexion entrante: "+socket);
-            ((ServidorHilo) new ServidorHilo(socket, idSession)).start();
-            idSession++;
-
-        }
+                Socket socket;
+                socket = ss.accept();
+                coordenadas = new Coordenadas();
+                System.out.println("Nueva conexion entrante: "+socket);
+                ((ServidorHilo) new ServidorHilo(socket, coordenadas)).start();
+                idSession++;
+                
+            }
         }catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
+}
+
 

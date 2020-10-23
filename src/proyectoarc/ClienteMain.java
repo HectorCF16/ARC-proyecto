@@ -19,8 +19,16 @@ class Cliente extends Thread{
     protected DataOutputStream dos;
     protected DataInputStream dis;
     private int id;
-    public Cliente(int id){
+    public static int numBucle;
+    public static int numVecinos;
+    public static int numClientes;
+    private String bucles;
+    protected int x;
+    protected int y;
+    
+    public Cliente(int id, String clientes, String vecinos, String bucles){
         this.id = id;
+        this.bucles = bucles;
     }
     @Override
     public void run(){
@@ -28,17 +36,29 @@ class Cliente extends Thread{
             sk = new Socket("127.0.0.1", 00001);
             dos = new DataOutputStream(sk.getOutputStream());
             dis = new DataInputStream(sk.getInputStream());
-            System.out.println(id + " envia saludo");
-            dos.writeUTF("hola");
-            String respuesta = "";
-            System.out.println(id + " Servidor devuelve saludo " + respuesta);
+            
+            for (int i = 0; i < Integer.parseInt(bucles); i++){
+                dos.writeUTF(this.actualizarPosicion());
+            }
             dis.close();
             dos.close();
         }catch (IOException ex){
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
+    
+    public String actualizarPosicion(){
+        String coordenadas = new String();
+        
+        x += (int)(Math.random()*5+(-5));
+        y += (int)(Math.random()*5+(-5));
+        
+        coordenadas = x + " " + y;
+        
+        return coordenadas;
+    }
 }
+
 public class ClienteMain {
 
     /**
@@ -46,11 +66,24 @@ public class ClienteMain {
      */
     public static void main(String args[]) throws InterruptedException {
         ArrayList<Thread> clientes = new ArrayList<Thread>();
-        for(int i = 1; i <= 100; i++){
-            Thread.sleep(1);
-            clientes.add(new Cliente(i));
+            
+        System.out.println("Dame el numero de clientes: ");
+        Scanner s = new Scanner(System.in);
+        String cli = s.nextLine();
+
+        System.out.println("Dame el numero de vecinos: ");
+        s = new Scanner(System.in);
+        String veci = s.nextLine();
+
+        System.out.println("Dame el numero de bucles ");
+        s = new Scanner(System.in);
+        String bucles = s.nextLine();
+            
+        for(int i = 1; i <= Integer.parseInt(cli); i++){
+            clientes.add(new Cliente(i, cli, veci, bucles));
         }
         for(Thread thread : clientes){
+            Thread.sleep(10);
             thread.start();
         }
     }
